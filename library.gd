@@ -37,4 +37,15 @@ func save_new():
 	save = LibrarySave.new()
 	var error = ResourceSaver.save(save, save_path)
 	print(error)
-	
+
+func list_printers() -> String:
+	var response : String = "Current Printers:" 
+	for printer : Printer in save.printers:
+		response += "\n- " + printer.name
+	return response
+
+func printer_choies() -> Array[Dictionary]:
+	var printer_names : Array[Dictionary] = []
+	for printer : Printer in save.printers:
+		printer_names.append(ApplicationCommand.choice(printer.name, printer.name))
+	return printer_names
