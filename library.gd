@@ -49,3 +49,9 @@ func printer_choies() -> Array[Dictionary]:
 	for printer : Printer in save.printers:
 		printer_names.append(ApplicationCommand.choice(printer.name, printer.name))
 	return printer_names
+
+func printer_choices_string() -> Array[String]:
+	var printer_names : Array[String] = []
+	for printer : Printer in save.printers:
+		printer_names.append(printer.name)
+	return printer_names

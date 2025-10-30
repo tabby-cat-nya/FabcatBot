@@ -165,13 +165,14 @@ func _register_application_commands(bot, guild_id: String = "") -> void:
 	#cmd.on_message(self, bot, message, channel, args)
 
 func remove_components_from_interaction(interaction: DiscordInteraction, msg = ":robot: Components have timed out!") -> void:
-	var embed = Embed.new().set_description(msg)
-	var new_embeds = interaction.message.embeds + [embed]
-	interaction.update({
-		"content": interaction.message.content,
-		"embeds": new_embeds,
-		"components": []
-	})
+	#var embed = Embed.new().set_description(msg)
+	#var new_embeds = interaction.message.embeds ## + [embed] TODO?
+	#interaction.update({
+		#"content": interaction.message.content,
+		#"embeds": new_embeds,
+		#"components": []
+	#})
+	pass
 
 func _on_interaction_create(bot: DiscordBot, interaction: DiscordInteraction):
 	# Handle ApplicationCommand
@@ -189,12 +190,13 @@ func _on_interaction_create(bot: DiscordBot, interaction: DiscordInteraction):
 
 			print("APP_CMD: " + app_cmd.data.name + " by " + interaction.member.user.username + "#" + interaction.member.user.discriminator + " (" + interaction.member.user.id + ")")
 			app_cmd.execute(self, bot, interaction, options)
-		else:
+		else: 
 			# The application command was not found
 			interaction.reply({
 				"ephemeral": true,
 				"content": ":electric_plug: The requested command was not found."
 			})
+			pass
 		return
 
 	var msg_id = interaction.message.id
