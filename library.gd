@@ -45,6 +45,12 @@ func list_printers() -> String:
 		response += "\n- " + printer.list_string()
 	return response
 
+func list_spools() -> String:
+	var response : String = "Current Spools:" 
+	for spool : Spool in save.spools:
+		response += "\n- " + spool.list_string()
+	return response
+
 func printer_choies() -> Array[Dictionary]:
 	var printer_names : Array[Dictionary] = []
 	for printer : Printer in save.printers:
