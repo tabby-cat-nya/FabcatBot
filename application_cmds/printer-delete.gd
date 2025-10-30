@@ -3,8 +3,10 @@ extends RefCounted
 #func on_ready(main, bot: DiscordBot) -> void:
 #	pass
 #
-#func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
-#	pass
+func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
+	print(options)
+	interaction.respond_autocomplete(Library.printer_choies())
+	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
 	print(options)
@@ -32,7 +34,7 @@ var data = ApplicationCommand.new()\
 	.add_option(ApplicationCommand.string_option("name", "the printers name",
 	{
 		"required":true,
-		
-		"choices" : Library.printer_choies()
+		"autocomplete":true,
+		#"choices" : Library.printer_choies()
 	}))\
 	
