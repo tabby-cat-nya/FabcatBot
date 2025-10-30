@@ -3,6 +3,7 @@ extends Node
 var save_path : String = "user://librarySave.tres"
 var save : LibrarySave
 
+# nozzles here or in save maybe?
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -41,7 +42,7 @@ func save_new():
 func list_printers() -> String:
 	var response : String = "Current Printers:" 
 	for printer : Printer in save.printers:
-		response += "\n- " + printer.name
+		response += "\n- " + printer.list_string()
 	return response
 
 func printer_choies() -> Array[Dictionary]:
