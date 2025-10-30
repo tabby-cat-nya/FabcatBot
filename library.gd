@@ -62,3 +62,9 @@ func printer_choices_string() -> Array[String]:
 	for printer : Printer in save.printers:
 		printer_names.append(printer.name)
 	return printer_names
+
+func spool_choices_string() -> Array[String]:
+	var spool_names : Array[String] = []
+	for spool : Spool in save.spools:
+		spool_names.append(spool.name)
+	return spool_names
