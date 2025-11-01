@@ -7,3 +7,4 @@
 - [ ] job management? 
 - [x] shoot some of the printers can hold multiple fillaments: endermixer 2, ams: 4 
 - [ ] handling of spools when printer is deleted
+- [ ] command permissions 
