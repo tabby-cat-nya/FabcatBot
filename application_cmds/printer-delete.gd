@@ -82,6 +82,7 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		#print("deleting: " + endangered_printer)
 		for printer in Library.save.printers:
 			if printer.name == endangered_printer:
+				
 				Library.save.printers.erase(printer)
 		Library.save_data()
 		var embed = Embed.new().set_description(endangered_printer + " has been deleted")

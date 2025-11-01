@@ -1,5 +1,6 @@
 extends RefCounted
 
+var printer_edit : Printer = null
 
 func on_ready(main, bot: DiscordBot) -> void:
 	bot.interaction_create.connect(on_interaction_create)
@@ -10,27 +11,7 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	#interaction.respond_autocomplete(Library.printer_choies())
 	
 	# The part of string which the user is typing
-	var part = options[0].value
-	#print("received autocomplete: ", part)
-
-	# The final Array of choices for the autocomplete response
-	var result = []
-	for hint in Library.printer_choices_string():
-		# If the user hasn't typed anything, add all the hints
-		if part == "":
-			result.append(ApplicationCommand.choice(hint, hint))
-		else:
-			# If the user has typed some part of string,
-			# add only those hints which have the part as a substring
-			if hint.findn(part) > -1:
-				result.append(ApplicationCommand.choice(hint, hint))
-
-	# Limit the number of results to 25 (Discord's limit is 25)
-	if result.size() > 25:
-		result = result.slice(0, 24)
-
-	# Respond with the results
-	interaction.respond_autocomplete(result)
+	AutocompleteTools.printer_autocomplete(options[0].value, interaction)
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
@@ -41,11 +22,40 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	
 	for printer in Library.save.printers:
 		if printer.name == printer_name:
-			printer_exists = true
-			spool_name = printer.spool.name
-			Library.save.spools.append(printer.spool)
-			printer.spool = null
-			#Library.save.printers.erase(printer)
+			if printer.spools.size() == 0:
+				interaction.reply({
+					"content": "Can't unload a spool from an empty printer",
+					#"embeds":[embed],
+					#"components":[row],
+				})
+			
+			if printer.spools.size() == 1:
+				var unloading_spool : Spool = printer.spools[0]
+				printer_exists = true
+				spool_name = unloading_spool.name
+				Library.save.spools.append(unloading_spool)
+				printer.spools.erase(unloading_spool)
+				Library.save_data()
+				var response : String = "returned `" + spool_name + "` to the library" 
+				interaction.reply({
+					"content": response,
+					#"embeds":[embed],
+					#"components":[row],
+				})
+			
+			else: #printer has multiple spools loaded:
+				printer_exists = true
+				var response : String = "This printer has multiple spools loaded, which would you like to unload?"
+				printer_edit = printer
+				var menu = SelectMenu.new().set_custom_id("spool-select")
+				for spool : Spool in printer.spools:
+					menu.add_option(spool.name, spool.name) 
+				var row = MessageActionRow.new().add_component(menu)
+				interaction.reply({
+					"content": response,
+					#"embeds":[embed],
+					"components":[row],
+				})
 	
 	#Library.save_data()
 	
@@ -57,7 +67,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 			
 	
 	
-	var response : String = "returned `" + spool_name + "` to the library" 
+	
 	#var embed = Embed.new().set_description(Library.list_printers()) 
 	#var row = MessageActionRow.new()
 	#var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
@@ -69,19 +79,25 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	#row.add_component(delete_button)
 	#row.add_component(keep_button)
 	
-	interaction.reply({
-		"content": response,
-		#"embeds":[embed],
-		#"components":[row],
-	})
+	
 	pass
 
 func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
-	if not interaction.is_button():
+	if not interaction.is_select_menu():
 		return
 	
-	print(interaction.data.custom_id)
-	
+	print(interaction.data.values[0])
+	var spool_unloading : String = interaction.data.values[0]
+	for spool : Spool in printer_edit.spools:
+		if spool.name == spool_unloading:
+			Library.save.spools.append(spool)
+			printer_edit.spools.erase(spool)
+			Library.save_data()
+			interaction.update({
+				"content" : "returned `" + spool.name + "` to the library" ,
+				"components" : [],
+			})
+			break
 	
 	
 	

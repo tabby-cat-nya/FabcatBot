@@ -13,48 +13,9 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	# The part of string which the user is typing
 	var spool_part : String
 	if options.size() > 1:
-		spool_part = options[1].value
-		print("received spool autocomplete: ", spool_part)
-		# The final Array of choices for the autocomplete response
-		result = []
-		for hint in Library.spool_choices_string():
-			# If the user hasn't typed anything, add all the hints
-			if spool_part == "":
-				result.append(ApplicationCommand.choice(hint, hint))
-			else:
-				# If the user has typed some part of string,
-				# add only those hints which have the part as a substring
-				if hint.findn(spool_part) > -1:
-					result.append(ApplicationCommand.choice(hint, hint))
-
-		# Limit the number of results to 25 (Discord's limit is 25)
-		if result.size() > 25:
-			result = result.slice(0, 24)
-
-		# Respond with the results
-		interaction.respond_autocomplete(result)
+		AutocompleteTools.spool_autocomplete(options[1].value, interaction)
 	else:
-		var part = options[0].value
-		print("received autocomplete: ", part)
-
-		# The final Array of choices for the autocomplete response
-		result = []
-		for hint in Library.printer_choices_string():
-			# If the user hasn't typed anything, add all the hints
-			if part == "":
-				result.append(ApplicationCommand.choice(hint, hint))
-			else:
-				# If the user has typed some part of string,
-				# add only those hints which have the part as a substring
-				if hint.findn(part) > -1:
-					result.append(ApplicationCommand.choice(hint, hint))
-
-		# Limit the number of results to 25 (Discord's limit is 25)
-		if result.size() > 25:
-			result = result.slice(0, 24)
-
-		# Respond with the results
-		interaction.respond_autocomplete(result)
+		AutocompleteTools.printer_autocomplete(options[0].value, interaction)
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:

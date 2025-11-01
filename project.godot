@@ -18,6 +18,7 @@ config/icon="uid://dta0nr1cvl70v"
 [autoload]
 
 Library="*res://Library.tscn"
+AutocompleteTools="*res://AutocompleteTools.gd"
 
 [editor_plugins]
 
