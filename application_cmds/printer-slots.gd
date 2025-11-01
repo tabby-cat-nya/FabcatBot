@@ -35,13 +35,13 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
 	print(options)
 	var printer_name = options[0].value
-	var new_nozzle = options[1].value
+	var new_slots : int = options[1].value
 	var printer_exists : bool = false
 	
 	for printer in Library.save.printers:
 		if printer.name == printer_name:
 			printer_exists = true
-			printer.nozzle = new_nozzle
+			printer.spool_slots = new_slots
 			#Library.save.printers.erase(printer)
 	
 	Library.save_data()
@@ -52,7 +52,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 		})
 		return
 	
-	var response : String = new_nozzle + " nozzle applied to `" + printer_name + "`\n" 
+	var response : String = printer_name + " now has `" + str(new_slots) + "` spool slots\n" 
 	var embed = Embed.new().set_description(Library.list_printers()) 
 	
 	
@@ -64,15 +64,15 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 
 
 var data = ApplicationCommand.new()\
-	.set_name("printer-nozzle")\
-	.set_description("change the nozzle attached to a printer")\
+	.set_name("printer-slots")\
+	.set_description("change the amount of spool slots the printer has")\
 	.add_option(ApplicationCommand.string_option("name", "the printers name",
 	{
 		"required":true,
 		"autocomplete":true,
 		#"choices" : Library.printer_choies()
 	}))\
-	.add_option(ApplicationCommand.string_option("new_nozzle","new nozzle to apply to the printer", 
+	.add_option(ApplicationCommand.integer_option("slots","number of spool slots the printer should have", 
 	{
 		"required" : true,
 	}))\

@@ -13,6 +13,13 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	if options.size() > 1:
 		spool_link = options[1].value
 	
+	## some sort of logic to name duplicated spool differently?
+	#var match_count : int = 0
+	#for spool : Spool in Library.save.spools:
+		#if spool.name.find(spool_name):
+			#match_count += 1
+	
+	
 	var new_spool : Spool = Spool.new()
 	new_spool.name = spool_name
 	if spool_link:

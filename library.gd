@@ -45,10 +45,25 @@ func list_printers() -> String:
 		response += "\n- " + printer.list_string()
 	return response
 
-func list_spools() -> String:
-	var response : String = "Current Spools:" 
+func list_spools(search : String = "") -> String:
+	var response : String = "Loaded Spools:"
+	var unloaded_printers : int = 0
+	for printer : Printer in save.printers:
+		if printer.spools.size() > 0:
+			response += "\n- " + printer.list_string()
+		else:
+			unloaded_printers += 1
+	if unloaded_printers > 0:
+		response += "\n-# +" + str(unloaded_printers) + " unloaded printers" 
+	
+	response += "\n\nAvailable Spools: "
+	var found_search_match = false 
 	for spool : Spool in save.spools:
-		response += "\n- " + spool.list_string()
+		var bold : bool = false
+		if spool.name == search and not found_search_match:
+			bold = true
+			found_search_match = true
+		response += "\n- " + spool.list_string(bold)
 	return response
 
 func printer_choies() -> Array[Dictionary]:

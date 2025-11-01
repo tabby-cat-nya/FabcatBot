@@ -2,8 +2,9 @@ extends Resource
 class_name Printer
 
 @export var name : String
-@export var spool : Spool
+@export var spools : Array[Spool] = []
 @export var nozzle : String = "0.4mm"
+@export var spool_slots : int = 1
 
 static var nozzles : Array[String] = [
 	"0.6mm",
@@ -15,13 +16,15 @@ static var nozzles : Array[String] = [
 func list_string() -> String:
 	var result = name + ": "
 	
-	if spool:
-		result += spool.name + " " 
-		if spool.link:
-			result += "[Link]("+spool.link+")"
+	if spools.size() > 0:
+		for i : int in spools.size():
+			result += spools[i].list_string()
+			if i < spools.size() - 1:
+				result += ", "
 	else:
 		result += "***Unloaded***"
 	
+	result += " (Slots: "+ str(spools.size()) +"/"+ str(spool_slots) +")"
 	result += " (Nozzle: "+nozzle+")"
 	
 	return result

@@ -1,6 +1,6 @@
 extends RefCounted
 
-var endangered_spool : String = ""
+var endangered_spool : Spool
 
 func on_ready(main, bot: DiscordBot) -> void:
 	bot.interaction_create.connect(on_interaction_create)
@@ -78,37 +78,63 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 			spool_editing = spool
 	
 	if spool_exists and printer_exists:
-		var printer_has_spool : bool = printer_editing.spool != null
-		if printer_has_spool:
-			endangered_spool = printer_editing.spool.name
-		printer_editing.spool = spool_editing
+		if printer_editing.spool_slots <= 1:
+			var printer_has_spool : bool = printer_editing.spools.size() > 0
+			if printer_has_spool:
+				endangered_spool = printer_editing.spools[0]
+				Library.save.spools.append(endangered_spool)
+				printer_editing.spools.clear()
+			printer_editing.spools.append(spool_editing) 
+			Library.save.spools.erase(spool_editing)
+			Library.save_data()
 		
-		if printer_has_spool:
-			#ask the user if they want to delete the old one
-			var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "` and unloaded `" + endangered_spool + "` would you like to keep or delete the old spool: `" + endangered_spool + "` ?" 
-			var embed = Embed.new().set_description(Library.list_printers()) 
-			var row = MessageActionRow.new()
-			var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
-			delete_button.set_custom_id('delete-oldspool')
-			delete_button.set_label("Yes, delete " + endangered_spool)
-			var keep_button = MessageButton.new().set_style(MessageButton.STYLES.DEFAULT)
-			keep_button.set_custom_id('keep-oldspool')
-			keep_button.set_label("No, keep the old spool")
-			row.add_component(delete_button)
-			row.add_component(keep_button)
-			
-			interaction.reply({
-				"content": response,
-				"embeds":[embed],
-				"components":[row],
-			})
-		else:
-			var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "`"
-			var embed = Embed.new().set_description(Library.list_printers()) 
-			interaction.reply({
-				"content": response,
-				"embeds":[embed],
-			})
+			if printer_has_spool:
+				#ask the user if they want to delete the old one
+				var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "` and unloaded `" + endangered_spool.name + "` would you like to keep or delete the old spool: `" + endangered_spool.name + "` ?" 
+				var embed = Embed.new().set_description(Library.list_printers()) 
+				var row = MessageActionRow.new()
+				var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
+				delete_button.set_custom_id('delete-oldspool')
+				delete_button.set_label("Yes, delete " + endangered_spool.name)
+				var keep_button = MessageButton.new().set_style(MessageButton.STYLES.DEFAULT)
+				keep_button.set_custom_id('keep-oldspool')
+				keep_button.set_label("No, keep the old spool")
+				row.add_component(delete_button)
+				row.add_component(keep_button)
+				
+				interaction.reply({
+					"content": response,
+					"embeds":[embed],
+					"components":[row],
+				})
+			else:
+				var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "`"
+				var embed = Embed.new().set_description(Library.list_printers()) 
+				interaction.reply({
+					"content": response,
+					"embeds":[embed],
+				})
+	
+		else: #printer has multiple slots, we can only handle it if there are empty slots
+			if (printer_editing.spools.size() < printer_editing.spool_slots):
+				printer_editing.spools.append(spool_editing)
+				Library.save.spools.erase(spool_editing)
+				Library.save_data()
+				var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "`"
+				var embed = Embed.new().set_description(Library.list_printers()) 
+				
+				interaction.reply({
+					"content": response ,
+					"embeds":[embed],
+				})
+				
+			else: #its full!!
+				
+				interaction.reply({
+					"content": "This printer has multiple slots and they are all full, I don't know which one to replace! use `/printer-unload` to unload a spool first",
+				})
+				pass
+	
 	else:
 		interaction.reply({
 			"content" : "Invalid input"
@@ -129,10 +155,11 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 	if(interaction.data.custom_id == "delete-oldspool"):
 		#print("deleting: " + endangered_printer)
 		for spool in Library.save.spools:
-			if spool.name == endangered_spool:
+			if spool == endangered_spool:
 				Library.save.spools.erase(spool)
 		Library.save_data()
-		var embed = Embed.new().set_description(endangered_spool + " has been removed")
+		var embed = Embed.new().set_description(endangered_spool.name + " has been removed")
+		endangered_spool = null
 		var new_embeds = interaction.message.embeds  + [embed] 
 		interaction.update({
 			"content": interaction.message.content,
@@ -141,7 +168,7 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		})
 		
 	elif(interaction.data.custom_id == "keep-oldspool"):
-		endangered_spool = ""
+		endangered_spool = null
 		var embed = Embed.new().set_description("cancelled removal")
 		var new_embeds = interaction.message.embeds  + [embed] 
 		interaction.update({

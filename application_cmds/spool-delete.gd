@@ -54,7 +54,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 		return
 	
 	var response : String = "Are you sure you want to delete: `" + spool_name + "`?\n" 
-	var embed = Embed.new().set_description(Library.list_spools()) 
+	var embed = Embed.new().set_description(Library.list_spools(spool_name)) 
 	var row = MessageActionRow.new()
 	var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
 	delete_button.set_custom_id('delete-spool')
@@ -83,6 +83,7 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		for spool in Library.save.spools:
 			if spool.name == endangered_spool:
 				Library.save.spools.erase(spool)
+				break
 		Library.save_data()
 		var embed = Embed.new().set_description(endangered_spool + " has been deleted")
 		var new_embeds = interaction.message.embeds  + [embed] 
