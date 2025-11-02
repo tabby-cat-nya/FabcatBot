@@ -29,6 +29,8 @@ func load_data():
 		save_new()
 	pass
 	
+	print("Save Location: " + ProjectSettings.globalize_path(save_path))
+	
 func save_data():
 	ResourceSaver.save(save, save_path)
 	pass
