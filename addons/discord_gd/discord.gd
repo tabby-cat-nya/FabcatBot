@@ -11,7 +11,7 @@ For Copyright and License: See LICENSE.md
 #region Public Variables
 
 var TOKEN: String
-var VERBOSE: bool = false
+var VERBOSE: bool = true
 var INTENTS: int = 513
 
 # Caches
@@ -676,7 +676,11 @@ func _send_heartbeat() -> void:  # Send heartbeat OP code 1
 		return
 
 	var response_payload = {'op': 1, 'd': _last_seq}
-	_send_dict_wss(response_payload)
+	if _client.get_ready_state() == WebSocketPeer.State.STATE_OPEN:
+		_send_dict_wss(response_payload)
+	else:
+		print("Websocket not open, skipping send")
+		login()
 	_heartbeat_ack_received = false
 	if VERBOSE:
 		print('Heartbeat sent!')
