@@ -6,5 +6,11 @@
 	- [X] unloading a spool returns it to the library
 - [ ] job management? 
 - [x] shoot some of the printers can hold multiple fillaments: endermixer 2, ams: 4 
-- [ ] handling of spools when printer is deleted
-- [ ] command permissions 
+- [x] handling of spools when printer is deleted
+- [x] command permissions 
+- [ ] refactoring 
+- [ ] documentation
+	- [ ] readme
+	- [ ] fabsoc docs
+	- [ ] help command -> points to fabsoc docs?
+- [ ] offer to delete /unloaded spools

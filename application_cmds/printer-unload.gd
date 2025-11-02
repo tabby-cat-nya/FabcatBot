@@ -15,6 +15,9 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
+	if not Tools.check_perms(interaction):
+		return
+	
 	print(options)
 	var printer_name = options[0].value
 	var printer_exists : bool = false
@@ -86,18 +89,22 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 	if not interaction.is_select_menu():
 		return
 	
-	print(interaction.data.values[0])
-	var spool_unloading : String = interaction.data.values[0]
-	for spool : Spool in printer_edit.spools:
-		if spool.name == spool_unloading:
-			Library.save.spools.append(spool)
-			printer_edit.spools.erase(spool)
-			Library.save_data()
-			interaction.update({
-				"content" : "returned `" + spool.name + "` to the library" ,
-				"components" : [],
-			})
-			break
+	if(interaction.data.custom_id == "spool-select"):
+		if not Tools.check_perms(interaction):
+			return
+		
+		print(interaction.data.values[0])
+		var spool_unloading : String = interaction.data.values[0]
+		for spool : Spool in printer_edit.spools:
+			if spool.name == spool_unloading:
+				Library.save.spools.append(spool)
+				printer_edit.spools.erase(spool)
+				Library.save_data()
+				interaction.update({
+					"content" : "returned `" + spool.name + "` to the library" ,
+					"components" : [],
+				})
+				break
 	
 	
 	

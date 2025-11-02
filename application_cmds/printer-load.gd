@@ -19,6 +19,9 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
+	if not Tools.check_perms(interaction):
+		return
+	
 	print(options)
 	var printer_name = options[0].value
 	var printer_exists : bool = false
@@ -114,6 +117,9 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 	print(interaction.data.custom_id)
 	
 	if(interaction.data.custom_id == "delete-oldspool"):
+		if not Tools.check_perms(interaction):
+			return
+		
 		#print("deleting: " + endangered_printer)
 		for spool in Library.save.spools:
 			if spool == endangered_spool:
@@ -129,6 +135,9 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		})
 		
 	elif(interaction.data.custom_id == "keep-oldspool"):
+		if not Tools.check_perms(interaction):
+			return
+		
 		endangered_spool = null
 		var embed = Embed.new().set_description("cancelled removal")
 		var new_embeds = interaction.message.embeds  + [embed] 

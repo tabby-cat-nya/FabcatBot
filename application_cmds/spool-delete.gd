@@ -35,6 +35,9 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
+	if not Tools.check_perms(interaction):
+		return
+	
 	print(options)
 	var spool_name = options[0].value
 	var spool_exists : bool = false
@@ -73,12 +76,16 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	pass
 
 func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
+	
+	
 	if not interaction.is_button():
 		return
 	
 	print(interaction.data.custom_id)
 	
 	if(interaction.data.custom_id == "delete-spool"):
+		if not Tools.check_perms(interaction):
+			return
 		#print("deleting: " + endangered_printer)
 		for spool in Library.save.spools:
 			if spool.name == endangered_spool:
@@ -94,6 +101,8 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		})
 		
 	elif(interaction.data.custom_id == "keep-spool"):
+		if not Tools.check_perms(interaction):
+			return
 		endangered_spool = ""
 		var embed = Embed.new().set_description("cancelled deletion")
 		var new_embeds = interaction.message.embeds  + [embed] 

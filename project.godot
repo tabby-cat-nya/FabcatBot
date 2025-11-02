@@ -19,6 +19,7 @@ config/icon="uid://dta0nr1cvl70v"
 
 Library="*res://Library.tscn"
 AutocompleteTools="*res://AutocompleteTools.gd"
+Tools="*res://Tools.gd"
 
 [editor_plugins]
 

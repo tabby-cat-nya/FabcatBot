@@ -35,6 +35,9 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
+	if not Tools.check_perms(interaction):
+		return
+	
 	print(options)
 	var printer_name = options[0].value
 	var printer_exists : bool = false
@@ -73,15 +76,23 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	pass
 
 func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
+	
+	
 	if not interaction.is_button():
 		return
 	
 	print(interaction.data.custom_id)
 	
 	if(interaction.data.custom_id == "delete-printer"):
+		if not Tools.check_perms(interaction):
+			return
 		#print("deleting: " + endangered_printer)
 		for printer in Library.save.printers:
 			if printer.name == endangered_printer:
+				
+				for spool : Spool in printer.spools:
+					Library.save.spools.append(spool)
+					#dont need to erase, the whole printers about to get obilierated
 				
 				Library.save.printers.erase(printer)
 		Library.save_data()
@@ -94,6 +105,8 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		})
 		
 	elif(interaction.data.custom_id == "keep-printer"):
+		if not Tools.check_perms(interaction):
+			return
 		endangered_printer = ""
 		var embed = Embed.new().set_description("cancelled deletion")
 		var new_embeds = interaction.message.embeds  + [embed] 
