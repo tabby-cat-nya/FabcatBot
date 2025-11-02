@@ -7,7 +7,7 @@ extends RefCounted
 #	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
-	if not Tools.check_perms(interaction):
+	if not Tools.check_perms(interaction): #limit access to technicians only
 		return
 	
 	print(options)

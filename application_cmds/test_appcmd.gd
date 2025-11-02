@@ -10,9 +10,9 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	print("hiya!")
 	interaction.reply(
 		{
-			"content" : "meow meow! hearing you loud and clear tabby!"
+			"content" : "meow meow!"
 		}
 	)
 	pass
 
-var data = ApplicationCommand.new().set_name("meow_test").set_description("meow_desc")
+var data = ApplicationCommand.new().set_name("meow_test").set_description("meow meow meow!")

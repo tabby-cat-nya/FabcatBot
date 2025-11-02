@@ -12,30 +12,11 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	
 	# The part of string which the user is typing
 	var part = options[0].value
-	#print("received autocomplete: ", part)
-
-	# The final Array of choices for the autocomplete response
-	var result = []
-	for hint in Library.printer_choices_string():
-		# If the user hasn't typed anything, add all the hints
-		if part == "":
-			result.append(ApplicationCommand.choice(hint, hint))
-		else:
-			# If the user has typed some part of string,
-			# add only those hints which have the part as a substring
-			if hint.findn(part) > -1:
-				result.append(ApplicationCommand.choice(hint, hint))
-
-	# Limit the number of results to 25 (Discord's limit is 25)
-	if result.size() > 25:
-		result = result.slice(0, 24)
-
-	# Respond with the results
-	interaction.respond_autocomplete(result)
+	AutocompleteTools.printer_autocomplete(part, interaction)
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
-	if not Tools.check_perms(interaction):
+	if not Tools.check_perms(interaction): #limit access to technicians only
 		return
 	
 	print(options)
@@ -84,7 +65,7 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 	print(interaction.data.custom_id)
 	
 	if(interaction.data.custom_id == "delete-printer"):
-		if not Tools.check_perms(interaction):
+		if not Tools.check_perms(interaction): #limit access to technicians only
 			return
 		#print("deleting: " + endangered_printer)
 		for printer in Library.save.printers:
@@ -105,7 +86,7 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		})
 		
 	elif(interaction.data.custom_id == "keep-printer"):
-		if not Tools.check_perms(interaction):
+		if not Tools.check_perms(interaction): #limit access to technicians only
 			return
 		endangered_printer = ""
 		var embed = Embed.new().set_description("cancelled deletion")

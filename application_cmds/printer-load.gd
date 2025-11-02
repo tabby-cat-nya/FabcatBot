@@ -19,7 +19,7 @@ func on_autocomplete(main, bot: DiscordBot, interaction: DiscordInteraction, opt
 	pass
 
 func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Array) -> void:
-	if not Tools.check_perms(interaction):
+	if not Tools.check_perms(interaction):  #limit access to technicians only
 		return
 	
 	print(options)
@@ -117,7 +117,7 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 	print(interaction.data.custom_id)
 	
 	if(interaction.data.custom_id == "delete-oldspool"):
-		if not Tools.check_perms(interaction):
+		if not Tools.check_perms(interaction):  #limit access to technicians only
 			return
 		
 		#print("deleting: " + endangered_printer)
@@ -135,7 +135,7 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 		})
 		
 	elif(interaction.data.custom_id == "keep-oldspool"):
-		if not Tools.check_perms(interaction):
+		if not Tools.check_perms(interaction):  #limit access to technicians only
 			return
 		
 		endangered_spool = null
