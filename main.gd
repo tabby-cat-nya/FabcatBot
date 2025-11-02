@@ -7,13 +7,14 @@ var interactions = {}
 var application_commands = {}
 
 
-#func _load_bot_token() -> String:
-	## read from .env file DISORD_BOT_TOKEN
-	#var lines = FileAccess.get_file_as_string(".env").split("\n")
-	#for line in lines:
-		#if line.begins_with("DISCORD_BOT_TOKEN="):
-			#return line.split("=")[1]
-	#return ""
+func _load_bot_token() -> String:
+	# read from .env file DISORD_BOT_TOKEN
+	var lines = FileAccess.get_file_as_string(".env").split("\n")
+	#print(lines)
+	for line in lines:
+		if line.begins_with("DISCORD_BOT_TOKEN="):
+			return line.split("=")[1]
+	return ""
 
 func _ready() -> void:
 	var bot = DiscordBot.new()
@@ -22,9 +23,9 @@ func _ready() -> void:
 	# Try to read token from global environment variables
 	var token = OS.get_environment("DISCORD_BOT_TOKEN")
 	if not token or (token and len(token) < 10):
-		# Read token from local .env file
-		#token = _load_bot_token()
-		token = "MTQzMzAyNTMwMzYzODQ0MjAzNQ.G3r4My.IdnvCw6xTBfoitEzvhPgxeErSDgcMCsznmLnvI"
+		 #Read token from local .env file
+		token = _load_bot_token()
+		
 
 	bot.TOKEN = token
 	#bot.INTENTS = 4609
