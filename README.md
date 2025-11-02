@@ -37,9 +37,10 @@ Since these commands edit data, only users with the `technician` role may use th
 > [!Warning] Work in progress
 
 fabcat is made in Godot v4.5 with the discord.gd plugin. To edit the project follow these steps:
-1. Download Godot v4.5
-2. Clone the fabcat repo to your computer 
-3. Open the project folder with Godot
+1. Download [Godot v4.5](https://godotengine.org/download/archive/)
+2. Clone the [fabcat repo](https://github.com/tabby-cat-nya/FabcatBot) to your computer 
+3. Add the `.env` file with the discord bot key (ask Tabby)
+4. Open the project folder with Godot
 
 ### Project Structure
 - `main.gd` - main script which manages everything at the top level, you shouldn't need to touch this
@@ -66,8 +67,8 @@ Each application command file is made up of up to 5 key parts, only `execute()` 
 - [Example discord.gd Project](https://github.com/3ddelano/discord-bot-v2-godot/tree/main)
 
 ### Running an instance of fabcat
-1. export to linux x86_64
-2. move to your server 
-3. give it executable permissions 
-4. run with the --headless argument
-5. then do something else to keep it running in background, restarting as needed
+1. In Godot, select `Project -> Export...` and export the Linux build
+2. This should create a few files which you should move to your server, make sure to move the `.env` file here too
+3. You may need to give the `.x86_64` executable permissions 
+4. run the executable with the `--headless` argument
+The bot should then be running! You may want to consider creating some sort of startup task so the bot can continue if something happens to the server

@@ -20,5 +20,8 @@
 - [x] seperate place to store bot access key
 - [x] update test command 
 
+- [ ] provide real technician id
+- [ ] update global commands 
+
 ### Possible furture development
 - job management
