@@ -13,4 +13,5 @@
 	- [ ] readme
 	- [ ] fabsoc docs
 	- [ ] help command -> points to fabsoc docs?
-- [ ] offer to delete /unloaded spools
+- [x] offer to delete /unloaded spools
+- [ ] bugtesting / fixing 

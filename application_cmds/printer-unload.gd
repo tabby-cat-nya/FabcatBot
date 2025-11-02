@@ -1,6 +1,7 @@
 extends RefCounted
 
 var printer_edit : Printer = null
+var endangered_spool : Spool = null
 
 func on_ready(main, bot: DiscordBot) -> void:
 	bot.interaction_create.connect(on_interaction_create)
@@ -34,16 +35,29 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 			
 			if printer.spools.size() == 1:
 				var unloading_spool : Spool = printer.spools[0]
+				endangered_spool = unloading_spool
 				printer_exists = true
 				spool_name = unloading_spool.name
 				Library.save.spools.append(unloading_spool)
 				printer.spools.erase(unloading_spool)
 				Library.save_data()
-				var response : String = "returned `" + spool_name + "` to the library" 
+				var response : String = "returned `" + spool_name + "` to the library, would you like to keep it there or delete it"
+				#var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "` and unloaded `" + endangered_spool.name + "` would you like to keep or delete the old spool: `" + endangered_spool.name + "` ?" 
+				#var embed = Embed.new().set_description(Library.list_printers()) 
+				var row = MessageActionRow.new()
+				var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
+				delete_button.set_custom_id('delete-unloadspool')
+				delete_button.set_label("Yes, delete " + endangered_spool.name)
+				var keep_button = MessageButton.new().set_style(MessageButton.STYLES.DEFAULT)
+				keep_button.set_custom_id('keep-unloadspool')
+				keep_button.set_label("No, keep the old spool")
+				row.add_component(delete_button)
+				row.add_component(keep_button)
+				 
 				interaction.reply({
 					"content": response,
 					#"embeds":[embed],
-					#"components":[row],
+					"components":[row],
 				})
 			
 			else: #printer has multiple spools loaded:
@@ -86,7 +100,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	pass
 
 func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
-	if not interaction.is_select_menu():
+	if not (interaction.is_select_menu() or interaction.is_button()) :
 		return
 	
 	if(interaction.data.custom_id == "spool-select"):
@@ -99,12 +113,57 @@ func on_interaction_create(bot: DiscordBot, interaction : DiscordInteraction):
 			if spool.name == spool_unloading:
 				Library.save.spools.append(spool)
 				printer_edit.spools.erase(spool)
+				endangered_spool = spool
 				Library.save_data()
+				
+				#var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "` and unloaded `" + endangered_spool.name + "` would you like to keep or delete the old spool: `" + endangered_spool.name + "` ?" 
+				#var embed = Embed.new().set_description(Library.list_printers()) 
+				var row = MessageActionRow.new()
+				var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
+				delete_button.set_custom_id('delete-unloadspool')
+				delete_button.set_label("Yes, delete " + endangered_spool.name)
+				var keep_button = MessageButton.new().set_style(MessageButton.STYLES.DEFAULT)
+				keep_button.set_custom_id('keep-unloadspool')
+				keep_button.set_label("No, keep the old spool")
+				row.add_component(delete_button)
+				row.add_component(keep_button)
+				
 				interaction.update({
-					"content" : "returned `" + spool.name + "` to the library" ,
-					"components" : [],
+					"content" : "returned `" + spool.name + "` to the library, would you like to delete it?" ,
+					"components":[row],
 				})
 				break
+				
+	if(interaction.data.custom_id == "delete-unloadspool"):
+		if not Tools.check_perms(interaction):
+			return
+		
+		#print("deleting: " + endangered_printer)
+		for spool in Library.save.spools:
+			if spool == endangered_spool:
+				Library.save.spools.erase(spool)
+		Library.save_data()
+		var embed = Embed.new().set_description(endangered_spool.name + " has been removed")
+		endangered_spool = null
+		var new_embeds = interaction.message.embeds  + [embed] 
+		interaction.update({
+			"content": interaction.message.content,
+			"embeds": new_embeds,
+			"components": []
+		})
+		
+	elif(interaction.data.custom_id == "keep-unloadspool"):
+		if not Tools.check_perms(interaction):
+			return
+		
+		endangered_spool = null
+		var embed = Embed.new().set_description("spool will be kept in library")
+		var new_embeds = interaction.message.embeds  + [embed] 
+		interaction.update({
+			"content": interaction.message.content,
+			"embeds": new_embeds,
+			"components": []
+		})
 	
 	
 	
