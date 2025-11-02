@@ -14,9 +14,10 @@
 	- [x] contributing guide
 	- [x] help command -> points to fabsoc docs?
 - [x] offer to delete /unloaded spools
-- [?] bugtesting / fixing 
+- [?] bugtesting / fixing
+	- [ ] check its saving when it should be 
 - [x] spool editing
-- [ ] seperate place to store bot access key
+- [x] seperate place to store bot access key
 - [x] update test command 
 
 ### Possible furture development
