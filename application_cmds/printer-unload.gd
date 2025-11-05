@@ -43,7 +43,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 				Library.save_data()
 				var response : String = "returned `" + spool_name + "` to the library, would you like to keep it there or delete it"
 				#var response : String = "Loaded `"+ spool_editing.name + "` into `" + printer_editing.name + "` and unloaded `" + endangered_spool.name + "` would you like to keep or delete the old spool: `" + endangered_spool.name + "` ?" 
-				#var embed = Embed.new().set_description(Library.list_printers()) 
+				var embed = Embed.new().set_description(Library.list_printers()) 
 				var row = MessageActionRow.new()
 				var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
 				delete_button.set_custom_id('delete-unloadspool')
@@ -56,7 +56,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 				 
 				interaction.reply({
 					"content": response,
-					#"embeds":[embed],
+					"embeds":[embed],
 					"components":[row],
 				})
 			
@@ -68,9 +68,10 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 				for spool : Spool in printer.spools:
 					menu.add_option(spool.name, spool.name) 
 				var row = MessageActionRow.new().add_component(menu)
+				var embed = Embed.new().set_description(Library.list_printers()) 
 				interaction.reply({
 					"content": response,
-					#"embeds":[embed],
+					"embeds":[embed],
 					"components":[row],
 				})
 	

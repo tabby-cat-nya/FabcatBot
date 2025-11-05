@@ -622,6 +622,7 @@ func _generate_timer_nodes() -> void:
 func _connection_closed(code: int, reason: String) -> void:
 	if VERBOSE:
 		print('WSS connection closed with code=%s, reason=%s' % [code, reason])
+	get_tree().quit() #force reset
 
 
 func _data_received(msg: String) -> void:
@@ -679,8 +680,9 @@ func _send_heartbeat() -> void:  # Send heartbeat OP code 1
 	if _client.get_ready_state() == WebSocketPeer.State.STATE_OPEN:
 		_send_dict_wss(response_payload)
 	else:
-		print("Websocket not open, skipping send")
-		login()
+		print("Websocket not open, resseting self")
+		get_tree().quit()
+		#login()
 	_heartbeat_ack_received = false
 	if VERBOSE:
 		print('Heartbeat sent!')

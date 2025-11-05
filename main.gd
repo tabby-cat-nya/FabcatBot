@@ -55,11 +55,11 @@ func _on_bot_ready(bot: DiscordBot):
 
 	# -----Single server (updates instantly)
 	#_register_application_commands(bot, "guild_id_here")
-	#_register_application_commands(bot, "679917161195765822") # personal server
+	_register_application_commands(bot, "679917161195765822") # personal server
 	#_register_application_commands(bot, "1038007666032787476") # fabsoc
 
 	# -----Global (may take upto 1hr to update)
-	_register_application_commands(bot)
+	#_register_application_commands(bot)
 
 
 #func _on_message_create(bot: DiscordBot, message: Message, channel: Dictionary) -> void:
