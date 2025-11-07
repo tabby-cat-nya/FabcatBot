@@ -177,6 +177,7 @@ func remove_components_from_interaction(interaction: DiscordInteraction, msg = "
 	pass
 
 func _on_interaction_create(bot: DiscordBot, interaction: DiscordInteraction):
+	print("\ndebug interaction: " + interaction.to_string())
 	# Handle ApplicationCommand
 	if interaction.is_command() or interaction.is_autocomplete():
 		var cmd_name = interaction.data.name
