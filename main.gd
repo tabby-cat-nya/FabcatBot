@@ -32,6 +32,7 @@ func _ready() -> void:
 	bot.bot_ready.connect(_on_bot_ready)
 	#bot.message_create.connect(_on_message_create)
 	bot.interaction_create.connect(_on_interaction_create)
+	bot.INTENTS = bot.INTENTS | (1 << 12)
 	bot.login()
 	#_load_commands(bot)
 	_load_application_commands(bot)
