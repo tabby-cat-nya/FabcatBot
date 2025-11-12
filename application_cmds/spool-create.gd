@@ -30,18 +30,20 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	Library.save.spools.append(new_spool)
 	Library.save_data()
 	
-	var response : String = "Created new spool: `" + spool_name + "`\n" 
-	var embed = Embed.new().set_description(Library.list_spools()) 
+	var response : String = "Created new spool: `" + spool_name + "`"
+	if spool_link:
+		response += " [Link]("+spool_link+")" 
+	#var embed = Embed.new().set_description(Library.list_spools()) 
 	
 	interaction.reply({
 		"content": response,
-		"embeds":[embed]
+		#"embeds":[embed]
 	})
 	pass
 
 var data = ApplicationCommand.new()\
 	.set_name("spool-create")\
 	.set_description("create a new spool")\
-	.add_option(ApplicationCommand.string_option("name", "the printers name",{"required":true}))\
+	.add_option(ApplicationCommand.string_option("name", "the spools name",{"required":true}))\
 	.add_option(ApplicationCommand.string_option("link", "optional link to the fillaments page", {"required" : false}))
 	

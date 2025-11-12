@@ -23,5 +23,9 @@
 - [x] provide real technician id
 - [x] update global commands 
 
+- [x] spool pagination
+	- [x] spool list
+	- [x] spool delete search result (removed embed)
+
 ### Possible furture development
 - job management

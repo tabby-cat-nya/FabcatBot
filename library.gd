@@ -47,26 +47,58 @@ func list_printers() -> String:
 		response += "\n- " + printer.list_string()
 	return response
 
-func list_spools(search : String = "") -> String:
-	var response : String = "Loaded Spools:"
+# displays a list of spools, will bold the name of the spool which matches the search if there are
+# more than 25 spools, will enable pagination and display 25 of each page, set the page argement to
+# display a specific page, will default to the first page
+func list_spools(search : String = "", page : int = 0) -> String:
+	var response : String = ""
 	var unloaded_printers : int = 0
+	
+	const per_page : int = 25
+	
+	# count the number of displayed spools, when it reaches 25(per_page), STOP
+	var counted_spools : int = 0
+	
+	# count the number of spools loaded into the printers, will be useful wheather its the first page or not
+	var loaded_spools : int = 0
 	for printer : Printer in save.printers:
-		if printer.spools.size() > 0:
-			response += "\n- " + printer.list_string()
-		else:
-			unloaded_printers += 1
-	if unloaded_printers > 0:
-		response += "\n-# +" + str(unloaded_printers) + " unloaded printers" 
+			loaded_spools += printer.spools.size()
+	
+	if page == 0: # only display the printer spools on the first page
+		response = "Loaded Spools:"
+		counted_spools += loaded_spools
+		for printer : Printer in save.printers:
+			if printer.spools.size() > 0:
+				response += "\n- " + printer.list_string()
+			else:
+				unloaded_printers += 1
+		if unloaded_printers > 0:
+			response += "\n-# +" + str(unloaded_printers) + " unloaded printers" 
 	
 	response += "\n\nAvailable Spools: "
 	var found_search_match = false 
-	for spool : Spool in save.spools:
+	
+	var i : int = (page * per_page) # starts higher on pages other than 0
+	if page > 0:
+		i -= loaded_spools
+	while i < save.spools.size() and counted_spools < per_page:
+		# print spools
 		var bold : bool = false
-		if spool.name == search and not found_search_match:
+		if save.spools[i].name == search and not found_search_match:
 			bold = true
 			found_search_match = true
-		response += "\n- " + spool.list_string(bold)
+		response += "\n- " + save.spools[i].list_string(bold)
+		counted_spools += 1
+		i += 1
 	return response
+	
+	#for spool : Spool in save.spools:
+		#var bold : bool = false
+		#if spool.name == search and not found_search_match:
+			#bold = true
+			#found_search_match = true
+		#response += "\n- " + spool.list_string(bold)
+	#return response
 
 func printer_choies() -> Array[Dictionary]:
 	var printer_names : Array[Dictionary] = []

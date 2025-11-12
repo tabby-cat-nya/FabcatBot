@@ -25,15 +25,17 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 		new_link = options[2].value
 	
 	var spool_exists : bool = false
-	
+	var found_spool : Spool
 	
 	for spool : Spool in Library.save.spools:
 		if spool.name == spool_name:
 			spool_exists = true
+			
 			if new_name != "0":
 				spool.name = new_name
 			if new_link:
 				spool.link = new_link
+			found_spool = spool
 			#Library.save.printers.erase(printer)
 	
 	Library.save_data()
@@ -44,13 +46,17 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 		})
 		return
 	
-	var response : String = "finished editing `" + new_name + "`\n"
-	var embed = Embed.new().set_description(Library.list_spools(new_name)) 
+	var response : String = "finished editing `" + new_name + "`"
+	if found_spool:
+		if found_spool.link:
+			response += " [Link]("+found_spool.link+")"
+	
+	#var embed = Embed.new().set_description(Library.list_spools(new_name)) 
 	
 	
 	interaction.reply({
 		"content": response,
-		"embeds":[embed],
+		#"embeds":[embed],
 	})
 	pass
 

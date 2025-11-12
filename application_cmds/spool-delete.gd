@@ -38,7 +38,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 		return
 	
 	var response : String = "Are you sure you want to delete: `" + spool_name + "`?\n" 
-	var embed = Embed.new().set_description(Library.list_spools(spool_name)) 
+	#var embed = Embed.new().set_description(Library.list_spools(spool_name)) 
 	var row = MessageActionRow.new()
 	var delete_button = MessageButton.new().set_style(MessageButton.STYLES.DANGER)
 	delete_button.set_custom_id('delete-spool')
@@ -51,7 +51,7 @@ func execute(main, bot: DiscordBot, interaction: DiscordInteraction, options: Ar
 	
 	interaction.reply({
 		"content": response,
-		"embeds":[embed],
+		#"embeds":[embed],
 		"components":[row],
 	})
 	pass
