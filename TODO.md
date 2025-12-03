@@ -27,5 +27,11 @@
 	- [x] spool list
 	- [x] spool delete search result (removed embed)
 
+## scam message checker
+- [ ] need to modify the command to allow for arguments for how long the timeout should last for 
+- [ ] bunch of detecting if its a scam message or not
+- [ ] update server version
+
+
 ### Possible furture development
 - job management

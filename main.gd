@@ -6,6 +6,7 @@ signal interaction_create(world, bot, interaction, data)
 var interactions = {}
 var application_commands = {}
 
+signal message_created(bot: DiscordBot, message: Message, channel: Dictionary)
 
 func _load_bot_token() -> String:
 	# read from .env file DISORD_BOT_TOKEN
@@ -30,7 +31,7 @@ func _ready() -> void:
 	bot.TOKEN = token
 	#bot.INTENTS = 4609
 	bot.bot_ready.connect(_on_bot_ready)
-	#bot.message_create.connect(_on_message_create)
+	bot.message_create.connect(_on_message_create)
 	bot.interaction_create.connect(_on_interaction_create)
 	bot.INTENTS = bot.INTENTS | (1 << 12)
 	bot.login()
@@ -63,7 +64,10 @@ func _on_bot_ready(bot: DiscordBot):
 	_register_application_commands(bot) # everywhere
 
 
-#func _on_message_create(bot: DiscordBot, message: Message, channel: Dictionary) -> void:
+func _on_message_create(bot: DiscordBot, message: Message, channel: Dictionary) -> void:
+	#print("meow!")
+	message_created.emit(bot, message, channel)
+	
 	#if message.author.bot or not message.content.begins_with(prefix):
 		#return
 #
