@@ -31,7 +31,12 @@
 - [ ] need to modify the command to allow for arguments for how long the timeout should last for 
 - [ ] bunch of detecting if its a scam message or not
 - [ ] update server version
-
+- [ ] message counting
+- [ ] immunity detection
+- [ ] immunity give command
+- [ ] move Pounce (this functionality) to its own independant bot
+ 
+- [ ] membership verification for fabsoc
 
 ### Possible furture development
 - job management

@@ -276,6 +276,9 @@ func timeout_member(guild_id: String, user_id: String, until : String):
 	var res = await _send_request('/guilds/%s/members/%s' % [guild_id, user_id], {'communication_disabled_until' = '2025-12-5T09:49:58.965896+00:00'}, HTTPClient.METHOD_PATCH)
 	return res
 
+func delete_message(channel_id : String, message_id : String):
+	var res = await _send_request('/channels/%s/messages/%s' % [channel_id, message_id], {}, HTTPClient.METHOD_DELETE)
+	return res
 
 func permissions_for(user_id: String, channel_id: String):
 	# Permissions for a user in a channel
