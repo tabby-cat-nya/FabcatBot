@@ -1,3 +1,5 @@
+## migrated: https://forge.tabbycat.dev/tabby/FabcatBot
+
 # Fabcat!
 meow meow! welcome to fabcat! a discord bot for Fabsoc made by Tabby
 `Version 0.1`
